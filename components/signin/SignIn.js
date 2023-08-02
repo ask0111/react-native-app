@@ -1,60 +1,108 @@
 import React, { useState, useEffect } from 'react';
-import { Button, TextInput } from 'react-native';
+import { View, TouchableOpacity, Text, Alert, Button, StyleSheet, TextInput } from 'react-native';
 import auth from '@react-native-firebase/auth';
 
 function SignIn() {
-  // If null, no SMS has been sent
   const [confirm, setConfirm] = useState(null);
-
-  // verification code (OTP - One-Time-Passcode)
+  const [phoneNumber, setPhoneNumber] = useState('+91 1234567890');
+  
   const [code, setCode] = useState('');
 
-  // Handle login
+
+
   function onAuthStateChanged(user) {
     if (user) {
-      // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
-      // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
-      // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
-      // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
+      
     }
   }
-
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
+    return subscriber; 
   }, []);
 
-  // Handle the button press
-  async function signInWithPhoneNumber(phoneNumber) {
-    console.log("before", phoneNumber)
-    const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
-    console.log(confirmation, "after")
+  
+  async function signInWithPhoneNumber(number='+91 1234567890') {
+    // console.log("before", number)
+    const confirmation = await auth().signInWithPhoneNumber(number);
+    // console.log(confirmation, "after")
     setConfirm(confirmation);
   }
 
   async function confirmCode() {
     try {
-      const res= await confirm.confirm(code);
+      const res = await confirm.confirm(code);
     } catch (error) {
       console.log('Invalid code.');
     }
   }
 
-  if (!confirm) {
-    return (
-      <Button
-        title="Phone Number Sign In"
-        onPress={() => signInWithPhoneNumber('+919755872746')}
-      />
-    );
-  }
+  
+
+
+
 
   return (
     <>
-      <TextInput value={code} onChangeText={text => setCode(text)} />
-      <Button title="Confirm Code" onPress={() => confirmCode()} />
+      <View style={styles.container}>
+
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+        />
+
+        
+
+        {confirm ? (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter OTP"
+              value={code}
+              onChangeText={setCode}
+            />
+            <TouchableOpacity style={styles.button} onPress={confirmCode}>
+              <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity>
+          </>
+        ) : 
+        <Button title='otp' style={styles.button} onPress={signInWithPhoneNumber(phoneNumber)}/>
+        
+        }
+
+      </View>
     </>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  input: {
+    width: '80%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  button: {
+    backgroundColor: '#3498db',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
 
 export default SignIn;

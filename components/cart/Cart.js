@@ -3,9 +3,17 @@ import { Button, FlatList, ScrollView, StyleSheet, Text, View } from "react-nati
 import CartItem from "./CartItem";
 
 
-export default function Cart() {
 
+
+
+export default function Cart({navigation}) {
     const [product, setProduct] = useState([])
+
+
+    const handleCheckout = ()=>{
+        // navigation.push('home')
+        navigation.navigate('checkout')
+    }
 
     const getdata = async () => {
         try {
@@ -31,7 +39,7 @@ export default function Cart() {
                 <Text>Total Amount: 1000$</Text>
             </View>
             <View>
-                <Button title="Buy Now" />
+                <Button onPress={handleCheckout} title="Buy Now" />
             </View>
 
         </View>

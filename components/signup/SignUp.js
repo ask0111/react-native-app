@@ -1,6 +1,6 @@
 import { ScrollView, StatusBar, Button, StyleSheet, TouchableOpacity, Text, TextInput, View } from "react-native";
 import React, { useState } from 'react';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -19,18 +19,19 @@ export default function SignUp({ navigation }) {
     setShowOtp(!showOtp);
   };
 
-  // Function to handle Signup button press
-  const handleSignUp = () => {
-      navigation.push('home')
+  
+  const handleSignUp = async() => {
+    try {
+    
+      await AsyncStorage.setItem('myKey', 'false');
+      const re = await AsyncStorage.getItem('myKey');
+      console.log( re);
     console.log('Signup Data:', { name, email, password, mobileNumber });
+    } catch (error) {
+      console.log('asyncerror', error);
+    }
   };
 
-
-  const handleLinkPress = () => {
-    // Replace 'YOUR_URL' with the desired URL you want to open
-    const url = 'YOUR_URL';
-    Linking.openURL(url);
-  };
 
 
   const HandleLogin = ()=>{
@@ -39,15 +40,10 @@ export default function SignUp({ navigation }) {
 
   return (<>
     <StatusBar backgroundColor='#fff' barStyle={'dark-content'} />
+
     <View style={styles.signcontainer}>
-      <View style={styles.upperbox}>
-        <View >
-          <Text style={styles.subhead}>Welcome</Text>
-          <Text>Signup into your account</Text>
-        </View>
-      </View>
       <ScrollView style={styles.box}>
-        <Text style={styles.text} >Sign Up</Text>
+        <Text style={[styles.text, {textAlign: 'center'}]} >Sign Up</Text>
         <View style={styles.container}>
           <TextInput
             style={styles.input}
@@ -139,20 +135,8 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
   box: {
-    
     maxWidth: '400px',
     minWidth: '100%'
-    // display: 'flex',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-    // backgroundColor: 'blue',
-    // borderBottomLeftRadius: 80,
-    // borderTopRightRadius: 80,
-    // backgroundColor: 'blue',
-    // marginTop: 10,
-    // padding: 16,
-    // paddingBottom: 10,
-    // paddingTop: 20,
   },
   container: {
     flex: 1,
