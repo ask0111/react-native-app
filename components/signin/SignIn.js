@@ -1,81 +1,60 @@
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { Button, TextInput } from 'react-native';
+import auth from '@react-native-firebase/auth';
 
+function SignIn() {
+  // If null, no SMS has been sent
+  const [confirm, setConfirm] = useState(null);
 
+  // verification code (OTP - One-Time-Passcode)
+  const [code, setCode] = useState('');
 
-
-export default function SignIn() {
-  return (<>
-    <View style={styles.container}>
-      <View>
-        <View >
-          <Text>Welcome</Text>
-          <Text>Signup into your account</Text>
-        </View>
-      </View>
-      <View style={styles.box}>
-          <Text style={styles.text} >Sign Up</Text>
-        <View style={styles.box2}>
-          <TextInput style={styles.input} placeholder="Full Name" />
-          <TextInput style={styles.input} placeholder="E-mail" />
-          <TextInput style={styles.input}  placeholder="Passward" />
-          <TextInput style={styles.input}  placeholder="Mobile Number" />
-        </View>
-          <Button title="SIGN UP" />
-      </View>
-    </View>
-  </>)
-}
-
-
-const styles = StyleSheet.create({
- 
-  container: {
-    flex: 1,
-    width: '100%',
-    gap: 30,
-    borderWidth: 2,
-    borderColor: 'red',
-    padding: 20,
-  },
-
-  text:{
-    fontSize: 40,
-    fontWeight: '800',
-  },
-  box: {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue',
-    borderBottomLeftRadius: 80,
-    borderTopRightRadius: 80,
-    backgroundColor: 'blue',
-    margin: 'auto',
-    marginTop: 30,
-    padding: 16,
-    paddingBottom: 100,
-    paddingTop: 20,
-  },
-  box2: {
-    width: '100%',
-    marginTop: 40,
-    marginBottom: 40,
-    borderWidth: 4,
-    gap: 20,
-  },
-
-  input: {
-    width:'100%',
-    display: 'flex',
-    margin: "auto",
-    padding: 10,
-    fontSize: 30,
-    borderWidth: 2,
-    borderColor: gray,
-    borderRadius: 20,
-    gap: 20,
+  // Handle login
+  function onAuthStateChanged(user) {
+    if (user) {
+      // Some Android devices can automatically process the verification code (OTP) message, and the user would NOT need to enter the code.
+      // Actually, if he/she tries to enter it, he/she will get an error message because the code was already used in the background.
+      // In this function, make sure you hide the component(s) for entering the code and/or navigate away from this screen.
+      // It is also recommended to display a message to the user informing him/her that he/she has successfully logged in.
+    }
   }
 
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
+  }, []);
 
-})
+  // Handle the button press
+  async function signInWithPhoneNumber(phoneNumber) {
+    console.log("before", phoneNumber)
+    const confirmation = await auth().signInWithPhoneNumber(phoneNumber);
+    console.log(confirmation, "after")
+    setConfirm(confirmation);
+  }
+
+  async function confirmCode() {
+    try {
+      const res= await confirm.confirm(code);
+    } catch (error) {
+      console.log('Invalid code.');
+    }
+  }
+
+  if (!confirm) {
+    return (
+      <Button
+        title="Phone Number Sign In"
+        onPress={() => signInWithPhoneNumber('+919755872746')}
+      />
+    );
+  }
+
+  return (
+    <>
+      <TextInput value={code} onChangeText={text => setCode(text)} />
+      <Button title="Confirm Code" onPress={() => confirmCode()} />
+    </>
+  );
+}
+
+export default SignIn;

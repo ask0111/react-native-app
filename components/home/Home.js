@@ -24,7 +24,7 @@ export default function Home(){
 
     return(<>
      
-            <Text style={styles.heading}>Products</Text>
+            {/* <Text style={styles.heading}>Products</Text> */}
         <ScrollView contentContainerStyle={styles.itemscontainer}>
             {product.map((prod)=> <Item item={prod} />)}
         </ScrollView>
