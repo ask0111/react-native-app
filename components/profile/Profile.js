@@ -6,8 +6,8 @@ import { View, Text, Image, Button, StyleSheet } from 'react-native';
 
 export default function Profile({navigation}){
 
-  // const user = useSelector (state => state.user);
-  // console.log(user, 'br')
+  const user = useSelector (state => state);
+  console.log(user, 'br')
 
     const [userData, setUserData] = useState({
         name: 'John Doe',

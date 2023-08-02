@@ -53,7 +53,7 @@ export default function SignUp({ navigation }) {
           await AsyncStorage.setItem('users', JSON.stringify([...res, person]));
         }
         await AsyncStorage.setItem('user', JSON.stringify(person));
-        // dispatch(userLogin(person));
+        dispatch(userLogin(person));
         const re = await AsyncStorage.getItem('users');
 
         console.log(re);

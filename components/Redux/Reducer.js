@@ -1,12 +1,19 @@
 
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { INCREMENT, DECREMENT } from '../actions/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// const usersInitialState = JSON.parse(AsyncStorage.getItem('user'));
+const fetch = async()=>{
+    const res = await AsyncStorage.getItem('user');
+    if(res){
+        return JSON.parse(res);
+    }else{
+        return res;
+    }
+}
+const usersInitialState = fetch;
 
-// const userReducer = (state = usersInitialState, action) => {
-//     return state;
-// };
+const userReducer = (state = usersInitialState, action) => {
+    return state;
+};
 
 // const initialState = {
 //   count: 0,
@@ -23,4 +30,4 @@
 //   }
 // };
 
-// export default {counterReducer, userReducer};
+export default {userReducer};
