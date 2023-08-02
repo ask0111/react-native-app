@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { View, Text, Image, Button, StyleSheet } from 'react-native';
 
 
 
 export default function Profile({navigation}){
+
+  // const user = useSelector (state => state.user);
+  // console.log(user, 'br')
 
     const [userData, setUserData] = useState({
         name: 'John Doe',

@@ -1,7 +1,9 @@
-import { ScrollView, StatusBar, Button, StyleSheet, TouchableOpacity, Text, TextInput, View } from "react-native";
-import React, { useState } from 'react';
+import { ScrollView, StatusBar, Button, StyleSheet, TouchableOpacity, Text, TextInput, View, Alert } from "react-native";
+import React, { useState, version } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { userLogin } from "../Redux/Action";
+import auth from '@react-native-firebase/auth';
+import { useSelector, useDispatch } from 'react-redux';
 
 
 export default function SignUp({ navigation }) {
@@ -9,24 +11,56 @@ export default function SignUp({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+
   const [otp, setOtp] = useState('');
+  const [otpOrg, setOtpOrg] = useState('');
   const [showOtp, setShowOtp] = useState(false);
-
-  // Function to handle OTP verification
-  const handleVerifyOTP = () => {
-    // Replace this with your OTP verification logic
-    // For simplicity, we'll just toggle the showOtp state
+  const [varified, setVerified] = useState(false);
+  const handleSendOTP = async () => {
     setShowOtp(!showOtp);
+    const otp = Math.floor(Math.random(6) * (1000000));
+    setOtpOrg(otp);
+    console.log(otp)
+    return Alert(otp);
   };
+  const handleVerifyOTP = (otp) => {
+    if (otp === otpOrg) {
+      setVerified(true);
+    }
+  }
 
-  
-  const handleSignUp = async() => {
+
+
+  const dispatch = useDispatch();
+
+  function checkfields() {
+    if (!name || !email || !password || !mobileNumber) {
+      return false;
+    }
+    return true;
+  }
+  const handleSignUp = async () => {
     try {
-    
-      await AsyncStorage.setItem('myKey', 'false');
-      const re = await AsyncStorage.getItem('myKey');
-      console.log( re);
-    console.log('Signup Data:', { name, email, password, mobileNumber });
+      if (checkfields()) {
+        // const r = await AsyncStorage.removeItem('user') || [];
+        const dataJson = await AsyncStorage.getItem('users') || [];
+        const res = JSON.parse(dataJson)
+        // const res = dataJson
+        const person = { id: res.length, name, email, password, mobileNumber }
+        if (res.length == 0) {
+          await AsyncStorage.setItem('users', JSON.stringify([person]));
+        } else {
+          await AsyncStorage.setItem('users', JSON.stringify([...res, person]));
+        }
+        await AsyncStorage.setItem('user', JSON.stringify(person));
+        // dispatch(userLogin(person));
+        const re = await AsyncStorage.getItem('users');
+
+        console.log(re);
+      } else {
+        return console.log("not allow")
+      }
+
     } catch (error) {
       console.log('asyncerror', error);
     }
@@ -34,7 +68,7 @@ export default function SignUp({ navigation }) {
 
 
 
-  const HandleLogin = ()=>{
+  const HandleLogin = () => {
     navigation.navigate('signin');
   }
 
@@ -43,7 +77,7 @@ export default function SignUp({ navigation }) {
 
     <View style={styles.signcontainer}>
       <ScrollView style={styles.box}>
-        <Text style={[styles.text, {textAlign: 'center'}]} >Sign Up</Text>
+        <Text style={[styles.text, { textAlign: 'center' }]} >Sign Up</Text>
         <View style={styles.container}>
           <TextInput
             style={styles.input}
@@ -66,7 +100,7 @@ export default function SignUp({ navigation }) {
             secureTextEntry
           />
           <TextInput
-            style={styles.input}
+            style={[styles.input, varified && { borderColor: 'green' }]}
             placeholder="Mobile Number"
             value={mobileNumber}
             onChangeText={setMobileNumber}
@@ -77,8 +111,8 @@ export default function SignUp({ navigation }) {
               <TextInput
                 style={styles.input}
                 placeholder="Enter OTP"
-                value={otp}
-                onChangeText={setOtp}
+                value={otpOrg}
+                onChangeText={setOtp(otpOrg)}
                 keyboardType="numeric"
               />
               <TouchableOpacity style={styles.button} onPress={handleVerifyOTP}>
@@ -86,7 +120,7 @@ export default function SignUp({ navigation }) {
               </TouchableOpacity>
             </>
           ) : (
-            <TouchableOpacity style={styles.button} onPress={handleVerifyOTP}>
+            <TouchableOpacity style={styles.button} onPress={handleSendOTP}>
               <Text style={styles.buttonText}>Send OTP</Text>
             </TouchableOpacity>
           )}
@@ -95,12 +129,12 @@ export default function SignUp({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text >If you are already signup 
-        <TouchableOpacity style={{cursor: 'pointer'}} onPress={HandleLogin}>
-        <Text style={{paddingTop: -30, textAlign: 'center', color: 'blue', fontWeight: '800' }}>
-          ` Login`
-        </Text>
-      </TouchableOpacity>
+        <Text >If you are already signup
+          <TouchableOpacity style={{ cursor: 'pointer' }} onPress={HandleLogin}>
+            <Text style={{ paddingTop: -30, textAlign: 'center', color: 'blue', fontWeight: '800' }}>
+              ` Login`
+            </Text>
+          </TouchableOpacity>
         </Text>
       </ScrollView>
     </View>
@@ -109,7 +143,7 @@ export default function SignUp({ navigation }) {
 
 
 const styles = StyleSheet.create({
-  upperbox:{
+  upperbox: {
     padding: 15,
     width: '100%',
     borderBottomWidth: 1,
