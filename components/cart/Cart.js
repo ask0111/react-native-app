@@ -1,24 +1,19 @@
 import { useEffect, useState } from "react";
 import { Button, FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import CartItem from "./CartItem";
-
-
-
-
+import { UseSelector, useSelector } from "react-redux";
 
 export default function Cart({navigation}) {
     const [product, setProduct] = useState([])
-
-
+    
     const handleCheckout = ()=>{
-        // navigation.push('home')
         navigation.navigate('checkout')
     }
-
+    
     const getdata = async () => {
+        // const cartsProducts = await useSelector((state)=> state.addedCartsReducer);
         try {
-            const res = await fetch("https://fakestoreapi.com/products");
-            const prod = await res.json();
+            const prod = await useSelector((state)=> state.addedCartsReducer);
             console.log(prod);
             setProduct(prod);
         } catch (error) {
@@ -29,8 +24,9 @@ export default function Cart({navigation}) {
 
     useEffect(() => {
         getdata();
-    }, [])
-
+    })
+    getdata();
+    
     return (<>
         <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', padding: 20 }}>
             <View>

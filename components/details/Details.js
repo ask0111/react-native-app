@@ -1,13 +1,96 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import ImageViewing from 'react-native-image-viewing';
+import { useDispatch, useSelector } from "react-redux";
+import { addedCartsRedux } from "../Redux/Action";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 const Details = ({ route }) => {
-    const [isAdded, setIsAdded] = useState(true);
-    console.log(route.params)
-  const {title, price, description, category, image, rating } = route.params;
+  console.log(route.params, 'pa');
+  const [isAdded, setIsAdded] = useState(true);
+  const { title, price, description, category, image, rating } = route.params;
 
+  const dispatch = useDispatch();
+  const allProductDetails = useSelector((state) => state.addedCartsReducer);
+
+
+  const RemoveHandler = async (product, userID) => {
+    try {
+        const arrData = await allProductDetails;
+      
+        const productArr = arrData.filter((data) => {
+            if (data.id !== product.id) {
+                return data;
+            }
+        })
+        await AsyncStorage.setItem(`${userID}`, JSON.stringify(productArr));
+    } catch (error) {
+        console.log('remove cart errer', error);
+    }
+
+}
+const CardAddHandler = async (product, userID) => {
+    try {
+        const req = await AsyncStorage.getItem(`${userID}`);
+        if (!req) {
+            await AsyncStorage.setItem(`${userID}`, JSON.stringify([product]));
+        } else {
+            await AsyncStorage.setItem(`${userID}`, JSON.stringify([...JSON.parse(req), product]));
+        }
+        const r = await AsyncStorage.getItem(`${userID}`);
+    } catch (error) {
+        console.log('Add Card Error', error);
+    }
+}
+const isAddedHandler = async (product) => {
+    try {
+      const resp = await AsyncStorage.getItem('user');
+      const userID = JSON.parse(resp).person.id;
+      
+      const req = await AsyncStorage.getItem(`${userID}`);
+      if (!req && isAdded) {
+        await CardAddHandler(product, userID);
+        setIsAdded(false);
+      } else if (isAdded) {
+        await CardAddHandler(product, userID);
+        setIsAdded(false);
+        
+      } else {
+        await RemoveHandler(product, userID);
+        setIsAdded(true)
+      }
+      
+        const result = await AsyncStorage.getItem(`${userID}`);
+        
+        dispatch(addedCartsRedux(JSON.parse(result)));
+
+    } catch (error) {
+        console.log('carts error', error);
+    }
+}
+
+
+
+  const Hovered = async (data) => {
+    try {
+      const addedCartsDetails = await allProductDetails;
+      console.log(addedCartsDetails, 'data', data)
+      addedCartsDetails.forEach(element => {
+        if (element.id == data.id) {
+          setIsAdded(false);
+        }
+      })
+    } catch (error) {
+      console.log('cart details error', error);
+    }
+
+  }
+
+  useEffect(() => {
+    Hovered(route.params);
+  }, [isAdded])
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -21,13 +104,13 @@ const Details = ({ route }) => {
         <Text style={styles.ratingText}>Rating: {rating.rate}</Text>
         <Text style={styles.ratingText}>Rating Count: {rating.count}</Text>
       </View>
-      {isAdded ? <Button onPress={()=> setIsAdded(false)} mode="outlined" style={styles.button}>
+      {isAdded ? <Button onPress={() => isAddedHandler(route.params)} mode="outlined" style={styles.button}>
         Add to Cart
-      </Button> : <Button onPress={()=> setIsAdded(true)} mode="contained" style={styles.button}>
+      </Button> : <Button onPress={() => isAddedHandler(route.params)} mode="contained" style={styles.button}>
         Remove Cart
       </Button>}
       <ImageViewing images={[{ uri: image }, { uri: image }]} />
-      
+
     </ScrollView>
   );
 };

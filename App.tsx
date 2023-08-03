@@ -14,6 +14,7 @@ const Stack = createStackNavigator();
 
 function App() {
   const user = useSelector((state) => state);
+  
   const fetch = async()=>{
     const userd = await AsyncStorage.getItem('user') || {isPresent: false};
     const isPresent = JSON.parse(userd).isPresent;

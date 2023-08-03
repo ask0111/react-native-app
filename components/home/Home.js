@@ -10,7 +10,7 @@ export default function Home({navigation}){
         try {
             const res = await fetch("https://fakestoreapi.com/products");
             const prod = await res.json();
-            console.log(prod);
+            // console.log(prod);
             setProduct(prod);
         } catch (error) {
             console.log(error);

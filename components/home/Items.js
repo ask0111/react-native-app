@@ -1,23 +1,94 @@
-import { useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
 import { Button, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { addedCartsRedux } from "../Redux/Action";
 
 
 export default function Item({ item }) {
-    console.log(item, 'i')
     const [isHovered, setIsHovered] = useState(false);
-    // const navigation = useNavigation();
+    const dispatch = useDispatch();
 
-    const handlePressIn = () => {
-        setIsHovered(true);
-    };
+    const addedCarts = useSelector((state) => state.addedCartsReducer);
 
-    const handlePressOut = () => {
-        setIsHovered(false);
-    };
-
-    const JumpDetails = (data)=>{
+    const JumpDetails = (data) => {
         item.navigation.push('details', data)
     }
+
+    const RemoveHandler = async (product, userID) => {
+        try {
+            const req = await AsyncStorage.getItem(`${userID}`);
+            const arrData = JSON.parse(req);
+            // console.log(arrData, 'datasremoc=ve');
+            const productArr = arrData.filter((data) => {
+                if (data.id !== product.id) {
+                    return data;
+                }
+            })
+            await AsyncStorage.setItem(`${userID}`, JSON.stringify(productArr));
+        } catch (error) {
+            console.log('remove cart errer', error);
+        }
+
+    }
+    const CardAddHandler = async (product, userID) => {
+        try {
+            const req = await AsyncStorage.getItem(`${userID}`);
+            if (!req) {
+                await AsyncStorage.setItem(`${userID}`, JSON.stringify([product]));
+            } else {
+                await AsyncStorage.setItem(`${userID}`, JSON.stringify([...JSON.parse(req), product]));
+            }
+            const r = await AsyncStorage.getItem(`${userID}`);
+            // console.log(r);
+
+        } catch (error) {
+            console.log('Add Card Error', error);
+        }
+    }
+    const isAddedHandler = async (product) => {
+        try {
+            const resp = await AsyncStorage.getItem('user');
+            const userID = JSON.parse(resp).person.id;
+
+            const req = await AsyncStorage.getItem(`${userID}`);
+
+            if (!req && !isHovered) {
+                await CardAddHandler(product, userID);
+                setIsHovered(true);
+            } else if (!isHovered) {
+                await CardAddHandler(product, userID);
+                setIsHovered(true);
+            } else {
+                await RemoveHandler(product, userID);
+                setIsHovered(false)
+            }
+            const result = await AsyncStorage.getItem(`${userID}`);
+            console.log('error')
+            dispatch(addedCartsRedux([...JSON.parse(result)]));
+            console.log('error1')
+
+        } catch (error) {
+            console.log('carts error', error);
+        }
+    }
+
+    const Hovered = async (data) => {
+        
+        const resp = await AsyncStorage.getItem('user');
+        const userID = JSON.parse(resp).person.id;
+        const req = await AsyncStorage.getItem(`${userID}`);
+        const arrData = JSON.parse(req);
+        arrData.forEach(element => {
+            if (element.id == data.id) {
+                setIsHovered(true);
+            }
+        })
+    }
+
+    useEffect(() => {
+        Hovered(item.prod);
+    }, [addedCarts, isHovered])
 
     return (<>
         <ScrollView style={styles.itemcontainer}>
@@ -26,18 +97,18 @@ export default function Item({ item }) {
             </View>
             <View style={styles.textBox}>
                 <View>
-                    <Text style={styles.title}>Title: <Text style={{color: 'black'}}>{item.prod.title}</Text> </Text>
-                    <Text>Price: <Text style={{color: 'black'}}>{item.prod.price}$</Text></Text>
+                    <Text style={styles.title}>Title: <Text style={{ color: 'black' }}>{item.prod.title}</Text> </Text>
+                    <Text>Price: <Text style={{ color: 'black' }}>{item.prod.price}$</Text></Text>
                 </View>
                 <View style={styles.flex}>
-                    <TouchableOpacity onPress={()=>JumpDetails(item.prod)} style={styles.button}>
+                    <TouchableOpacity onPress={() => JumpDetails(item.prod)} style={styles.button}>
                         <Text style={styles.buttonText}>View More Details</Text>
                     </TouchableOpacity>
                     <View style={styles.flex}>
                         <TouchableOpacity
                             style={[styles.button, isHovered && styles.buttonHovered]}
-                            onPressIn={handlePressIn}
-                            // onPressOut={handlePressOut}
+                            onPress={() => isAddedHandler(item.prod)}
+                        // onPressOut={handlePressOut}
                         >
                             <Text style={styles.buttonText}>Add to Card</Text>
                         </TouchableOpacity>
@@ -51,10 +122,10 @@ export default function Item({ item }) {
 
 const styles = StyleSheet.create({
 
-    title:{
+    title: {
         fontSize: 20,
         fontWeight: '800',
-        height: 30, 
+        height: 30,
         overflow: 'hidden',
     },
     price: {
@@ -86,8 +157,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         gap: 20,
-        
-    justifyContent: 'space-between',
+
+        justifyContent: 'space-between',
     },
 
     flex: {

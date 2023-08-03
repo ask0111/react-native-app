@@ -31,7 +31,6 @@ export default function CartItem({ item }) {
                     <TouchableOpacity style={styles.button}>
                         <Text style={styles.buttonText}>&#43;</Text>
                     </TouchableOpacity>
-                    <View style={styles.flex}>
                         <TouchableOpacity
                             style={[styles.button, isHovered && styles.buttonHovered]}
                             onPressIn={handlePressIn}
@@ -39,6 +38,7 @@ export default function CartItem({ item }) {
                         >
                             <Text style={styles.buttonText}>&#45;</Text>
                         </TouchableOpacity>
+                    <View style={styles.flex}>
                     </View>
                     <Button title="Remove" />
                 </View>
