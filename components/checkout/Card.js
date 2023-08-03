@@ -1,11 +1,71 @@
-import React from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView , Alert } from 'react-native';
+import { useSelector } from 'react-redux';
 
-export default function Card() {
+
+
+export default function Card({navigation}) {
+   
+    const [price, setPrice] = useState(0);
+    const [quantity, setQuantity] = useState(0);
+
+    const handleShowAlert = () => {
+        Alert.alert(
+          'Ordered Successfull!', 
+          `Your CARD Order Has compeleted Check On History...`,
+          [
+            {
+              text: 'OK',   
+              onPress: () => console.log('OK Pressed'),
+              style: 'cancel',  
+            },
+          ],
+          { cancelable: false }  
+        );
+      };
+
+    const PaymentHandler = () => {
+        handleShowAlert();
+        navigation.navigate('home');
+    };
+
+    
+
+    const [itemDetails, setItemDetails] = useState([])
+
+    const Totalhandler = (prod) => {
+        let t1 = 0, t2 = 0;
+        prod.forEach(element => {
+            t1 += element.count;
+            t2 += element.product.price * element.count;
+        });
+        setQuantity(t1);
+        setPrice(t2);
+    }
+    const getdata = async () => {
+        try {
+            const prod = await useSelector((state) => state.addedCartsReducer);
+            console.log(prod);
+            setItemDetails(prod);
+            Totalhandler(prod);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        getdata();
+    })
+    getdata();
+
+
+
+
     return (<>
             <View style={styles.fixedup}>
                 <Text style={{ textAlign: 'center', fontSize: 32, color: '#fff' }}>PAYMET MODE</Text>
             </View>
+            
         <ScrollView contentContainerStyle={styles.scrollbar}>
             <View style={styles.container}>
                 <View style={styles.card}>
@@ -31,12 +91,19 @@ export default function Card() {
                             keyboardType="numeric"
                         />
                     </View>
-                    <View style={styles.button}>
+                    <TouchableOpacity 
+                    onPress={()=> PaymentHandler()}
+                    style={styles.button}>
                         <Text style={styles.buttonText}>Submit Payment</Text>
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
+        <View style={styles.item}>
+                <Text>Total Products Details: </Text>
+                <Text>Price: ${price.toFixed(2)}</Text>
+                <Text>Quantity: {quantity}</Text>
+            </View>
     </>)
 }
 
@@ -47,6 +114,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#f1f1f1',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    item: {
+        marginBottom: 8,
+        marginLeft: 10,
     },
     fixedup: {
         position: 'absolute',

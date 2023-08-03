@@ -18,10 +18,13 @@ export default function CartItem( {item}) {
             const req = await AsyncStorage.getItem(`${userID}`);
             const arrData = JSON.parse(req);
             const array = arrData.map(element => {
-                if (element.product.id == data.id) {
+                if (element.product.id == data.product.id ) {
+                    if(element.count == 0 && c == -1){
+                        return element;
+                    }
                     return {
                         product: element.product,
-                        count: element.count + c
+                        count: element.count + c,
                     }
                 } else {
                     return element;
@@ -58,7 +61,7 @@ export default function CartItem( {item}) {
             const userID = JSON.parse(resp).person.id;
             const req = await AsyncStorage.getItem(`${userID}`);
 
-            if (!req && !JSON.parse(req).count) {
+            if (!req || !product.count) {
                 setIsHovered(true);
             } else {
                 await CardAddHandler(product, userID, -1);
@@ -70,28 +73,30 @@ export default function CartItem( {item}) {
     }
 
 
-    // const Hovered = async (data) => {
-    //     try {
-    //         const resp = await AsyncStorage.getItem('user');
-    //         const userID = JSON.parse(resp).person.id;
+    const RemoveCartHandler = async(data) => {
+        try {
+            const resp = await AsyncStorage.getItem('user');
+            const userID = JSON.parse(resp).person.id;
+            const req = await AsyncStorage.getItem(`${userID}`);
+            const arrData = JSON.parse(req);
 
-    //         const req = await AsyncStorage.getItem(`${userID}`);
+            const newArrData = arrData.filter(element => {
+                if (element.product.id !== data.product.id) {
+                    return element;
+                }
+            })
+            await AsyncStorage.setItem(`${userID}`, JSON.stringify(newArrData));
+            dispatch(addedCartsRedux(newArrData));
 
-    //         const arrData = JSON.parse(req);
-    //         arrData.forEach(element => {
-    //             if (element.product.id == data.id) {
-    //                 setIsHovered(true);
-    //             }
-    //         })
-    //     } catch (error) {
-    //         console.log('Hovered error', error)
-    //     }
+        } catch (error) {
+            console.log('Hovered error', error)
+        }
 
-    // }
+    }
 
-    useEffect(() => {
-        // Hovered(item);
-    }, [selector, isHovered])
+    // useEffect(() => {
+    //     // Hovered(item);
+    // }, [selector, isHovered])
 
 
     return (<>
@@ -104,8 +109,8 @@ export default function CartItem( {item}) {
                     <Text style={styles.title}>Title: <Text style={{ color: 'black' }}>{item.product.title}</Text> </Text>
                     <Text>Price: <Text style={{ color: 'black' }}>{item.product.price}$</Text></Text>
                 </View>
-                <Text style={{ width: '100%' }} > Total No.: <Text style={{ color: '#ffc', fontSize: 16 }}>{item.product.count}</Text></Text>
-                <Text style={{ width: '100%' }} > Total: <Text style={{ color: '#ffc', fontSize: 24 }}>{item.product.price * item.count}</Text>$</Text>
+                <Text style={{ width: '100%' }} > Total No.: <Text style={{ color: '#ffc', fontSize: 16 }}>{item.count}</Text></Text>
+                <Text style={{ width: '100%' }} > Total: <Text style={{ color: '#ffc', fontSize: 24 }}>{(item.product.price * item.count).toFixed(2)}</Text>$</Text>
                 <View style={styles.flex}>
                     <TouchableOpacity style={styles.button}
                         onPress={() => IncreamentHandler(item)}
@@ -118,7 +123,7 @@ export default function CartItem( {item}) {
                     >
                         <Text style={styles.buttonText}>&#45;</Text>
                     </TouchableOpacity>
-                    <Button title="Remove" />
+                    <Button onPress={()=> RemoveCartHandler(item)} title="Remove" />
                 </View>
             </View>
         </View>
@@ -139,7 +144,7 @@ const styles = StyleSheet.create({
 
     itemcontainer: {
         width: 'calc(100%-20)',
-        backgroundColor: 'radial-gradient(circle, rgba(63,94,251,1) 0%, rgba(252,70,107,1) 100%)',
+        backgroundColor: '#6F61C0',
         borderRadius: 10,
         elevation: 4,
         overflow: 'hidden',

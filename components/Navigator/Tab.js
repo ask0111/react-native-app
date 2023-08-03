@@ -50,10 +50,10 @@ function TabNavigation() {
             }}
           >
             
-            <Tab.Screen name="home" component={StackNavDetails} options={{ title: "Products" }} />
-            <Tab.Screen name="profile" component={Profile} options={{ title: 'User Profile' }} />
-            <Tab.Screen name="cart" component={StackNavigation} />
-            <Tab.Screen name="card" component={Card} />
+            <Tab.Screen name="home" component={StackNavDetails} options={{ headerShown: false }} />
+            <Tab.Screen name="profile" component={Profile} options={{ headerShown: false }} />
+            <Tab.Screen name="cart" component={StackNavigation} options={{ headerShown: false }}/>
+            <Tab.Screen name="card" component={Card} options={{ headerShown: false }}/>
           </Tab.Navigator>
         </NavigationContainer>
   

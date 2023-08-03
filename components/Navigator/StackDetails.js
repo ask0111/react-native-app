@@ -11,10 +11,19 @@ function StackNavDetails() {
    
     return (<> 
     
-          <Stack.Navigator initialRouteName='home'>
-            <Stack.Screen name="home" component={Home} />
-            <Stack.Screen name="details" component={Details} />
-            <Stack.Screen name="checkout" component={CheckOut} />
+          <Stack.Navigator 
+           screenOptions={{
+            headerStyle: {
+              backgroundColor: '#6F61C0',
+            },
+            headerTitleStyle: {
+              color: 'black'
+            }
+          }}
+          initialRouteName='home'>
+            <Stack.Screen name="home" component={Home} options={{ title: 'PRODUCTS' }} />
+            <Stack.Screen name="details" component={Details} options={{ title: 'PRODUCT DETAILS' }}/>
+            <Stack.Screen name="checkout" component={CheckOut} options={{ title: 'CHECKOUT' }}/>
           </Stack.Navigator>
     </>
     );

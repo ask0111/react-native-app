@@ -3,12 +3,18 @@ import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-nati
 
 
 
-export default function CheckOut() {
+export default function CheckOut({navigation}) {
     const [checked, setChecked] = useState(false);
     const [isHovered, setIsHovered] = useState('');
+    const [option, setOption] = useState('');
 
     const handlePressIn = (value) => {
+        // navigation.navigate(value)
+        setOption(value);
         setIsHovered(value);
+    };
+    const handlePress = (value) => {
+        navigation.navigate(value)
     };
 
 
@@ -74,7 +80,7 @@ export default function CheckOut() {
         <View style={styles.fixed}>
             <TouchableOpacity
             style={styles.fixed}
-                onPressIn={() => handlePressIn('bank')}
+                onPressIn={() => handlePress(option)}
             >
                 <Text style={{textAlign: 'center', fontSize: 32, color: '#fff'}}>Click Hare</Text>
                 <View>
@@ -142,7 +148,7 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent:'center',
         height: 80,
-        backgroundColor: '#171f77',
+        backgroundColor: '#AA77FF',
     },
     fixedup: {
         position: 'absolute',
