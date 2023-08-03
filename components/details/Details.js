@@ -8,12 +8,35 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Details = ({ route }) => {
-  console.log(route.params, 'pa');
+
+  const Hovered = async (data) => {
+    try {
+      const resp = await AsyncStorage.getItem('user');
+      const userID = JSON.parse(resp).person.id;
+
+      const req = await AsyncStorage.getItem(`${userID}`);
+      const addedCartsDetails = JSON.parse(req);
+      // console.log(addedCartsDetails, 'data', data)
+      addedCartsDetails.forEach(element => {
+        if (element.product.id == data.id) {
+          // setIsAdded(false);
+          return false;
+        }
+      })
+      return true;
+    } catch (error) {
+      console.log('cart details error', error);
+    }
+
+  }
+
+ 
   const [isAdded, setIsAdded] = useState(true);
+  const [isSelected, setIsSelected] = useState('');
   const { title, price, description, category, image, rating } = route.params;
 
   const dispatch = useDispatch();
-  const allProductDetails = useSelector((state) => state.addedCartsReducer);
+  const a = useSelector((state) => setIsAdded(true));
 
 
   const RemoveHandler = async (product, userID) => {
@@ -21,7 +44,7 @@ const Details = ({ route }) => {
         const arrData = await allProductDetails;
       
         const productArr = arrData.filter((data) => {
-            if (data.id !== product.id) {
+            if (data.product.id !== product.id) {
                 return data;
             }
         })
@@ -35,9 +58,9 @@ const CardAddHandler = async (product, userID) => {
     try {
         const req = await AsyncStorage.getItem(`${userID}`);
         if (!req) {
-            await AsyncStorage.setItem(`${userID}`, JSON.stringify([product]));
+            await AsyncStorage.setItem(`${userID}`, JSON.stringify([{product, count: 1}]));
         } else {
-            await AsyncStorage.setItem(`${userID}`, JSON.stringify([...JSON.parse(req), product]));
+            await AsyncStorage.setItem(`${userID}`, JSON.stringify([...JSON.parse(req), {product, count: 1}]));
         }
         const r = await AsyncStorage.getItem(`${userID}`);
     } catch (error) {
@@ -56,7 +79,6 @@ const isAddedHandler = async (product) => {
       } else if (isAdded) {
         await CardAddHandler(product, userID);
         setIsAdded(false);
-        
       } else {
         await RemoveHandler(product, userID);
         setIsAdded(true)
@@ -73,24 +95,10 @@ const isAddedHandler = async (product) => {
 
 
 
-  const Hovered = async (data) => {
-    try {
-      const addedCartsDetails = await allProductDetails;
-      console.log(addedCartsDetails, 'data', data)
-      addedCartsDetails.forEach(element => {
-        if (element.id == data.id) {
-          setIsAdded(false);
-        }
-      })
-    } catch (error) {
-      console.log('cart details error', error);
-    }
-
-  }
-
-  useEffect(() => {
-    Hovered(route.params);
-  }, [isAdded])
+  
+  // useEffect(() => {
+  //   Hovered(route.params);
+  // }, [])
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

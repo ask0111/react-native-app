@@ -4,11 +4,10 @@ import { useState, useEffect } from "react";
 import { Button, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import { addedCartsRedux } from "../Redux/Action";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function CartItem( {item}) {
-    console.log(item)
+export default function CartItem() {
     const [isHovered, setIsHovered] = useState(false);
+    const [item, setItem] = useState([]);
 
     const dispatch = useDispatch();
     const selector = useSelector((state) => state.addedCartsReducer);
@@ -43,10 +42,8 @@ export default function CartItem( {item}) {
             const req = await AsyncStorage.getItem(`${userID}`);
 
             if (!req) {
-                setIsHovered(true);
             } else {
                 await CardAddHandler(product, userID, 1);
-                setIsHovered(true);
             }
         } catch (error) {
             console.log('Increment error', error);
@@ -59,25 +56,31 @@ export default function CartItem( {item}) {
             const req = await AsyncStorage.getItem(`${userID}`);
 
             if (!req && !JSON.parse(req).count) {
-                setIsHovered(true);
             } else {
                 await CardAddHandler(product, userID, -1);
-                setIsHovered(true);
             }
         } catch (error) {
             console.log('Decreament error', error);
         }
     }
 
+    const ShowAll = async()=>{
+        const resp = await AsyncStorage.getItem('user');
+        const userID = JSON.parse(resp).person.id;
+        const req = await AsyncStorage.getItem(`${userID}`);
+        setItem(JSON.parse(req));
+        setIsHovered(true);
+        console.log(isHovered, item);
+    }
+
+    useEffect(()=>{
+        ShowAll();
+    })
 
     // const Hovered = async (data) => {
     //     try {
-    //         const resp = await AsyncStorage.getItem('user');
-    //         const userID = JSON.parse(resp).person.id;
-
-    //         const req = await AsyncStorage.getItem(`${userID}`);
-
-    //         const arrData = JSON.parse(req);
+    //         const resp = await useSelector((state) => state.addedCartsReducer);
+           
     //         arrData.forEach(element => {
     //             if (element.product.id == data.id) {
     //                 setIsHovered(true);
@@ -86,26 +89,25 @@ export default function CartItem( {item}) {
     //     } catch (error) {
     //         console.log('Hovered error', error)
     //     }
-
     // }
 
-    useEffect(() => {
-        // Hovered(item);
-    }, [selector, isHovered])
+    // useEffect(() => {
+    //     Hovered(item);
+    // }, [selector, isHovered])
 
 
     return (<>
-        <View style={styles.itemcontainer}>
+        {isHovered ? <View style={styles.itemcontainer}>
             <View style={styles.imgBox}>
-                <Image style={styles.img} source={{ uri: `${item.product.image}` }} />
+                <Image style={styles.img} source={{ uri: `${item.image}` }} />
             </View>
             <View style={styles.textBox}>
                 <View>
-                    <Text style={styles.title}>Title: <Text style={{ color: 'black' }}>{item.product.title}</Text> </Text>
-                    <Text>Price: <Text style={{ color: 'black' }}>{item.product.price}$</Text></Text>
+                    <Text style={styles.title}>Title: <Text style={{ color: 'black' }}>{item.title}</Text> </Text>
+                    <Text>Price: <Text style={{ color: 'black' }}>{item.price}$</Text></Text>
                 </View>
-                <Text style={{ width: '100%' }} > Total No.: <Text style={{ color: '#ffc', fontSize: 16 }}>{item.product.count}</Text></Text>
-                <Text style={{ width: '100%' }} > Total: <Text style={{ color: '#ffc', fontSize: 24 }}>{item.product.price * item.count}</Text>$</Text>
+                <Text style={{ width: '100%' }} > Total No.: <Text style={{ color: '#ffc', fontSize: 16 }}>{2}</Text></Text>
+                <Text style={{ width: '100%' }} > Total: <Text style={{ color: '#ffc', fontSize: 24 }}>{item.price * 2}</Text>$</Text>
                 <View style={styles.flex}>
                     <TouchableOpacity style={styles.button}
                         onPress={() => IncreamentHandler(item)}
@@ -122,6 +124,9 @@ export default function CartItem( {item}) {
                 </View>
             </View>
         </View>
+    :
+    <Button onPress={()=> ShowAll()} title="Show Carts" /> 
+    }
     </>)
 }
 

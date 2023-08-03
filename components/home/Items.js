@@ -6,9 +6,9 @@ import { addedCartsRedux } from "../Redux/Action";
 
 
 export default function Item({ item }) {
+
     const [isHovered, setIsHovered] = useState(false);
     const dispatch = useDispatch();
-
     const addedCarts = useSelector((state) => state.addedCartsReducer);
 
     const JumpDetails = (data) => {
@@ -19,9 +19,9 @@ export default function Item({ item }) {
         try {
             const req = await AsyncStorage.getItem(`${userID}`);
             const arrData = JSON.parse(req);
-            // console.log(arrData, 'datasremoc=ve');
+           
             const productArr = arrData.filter((data) => {
-                if (data.id !== product.id) {
+                if (data.product.id !== product.id) {
                     return data;
                 }
             })
@@ -35,13 +35,11 @@ export default function Item({ item }) {
         try {
             const req = await AsyncStorage.getItem(`${userID}`);
             if (!req) {
-                await AsyncStorage.setItem(`${userID}`, JSON.stringify([product]));
+                await AsyncStorage.setItem(`${userID}`, JSON.stringify([{product, count: 1}]));
             } else {
-                await AsyncStorage.setItem(`${userID}`, JSON.stringify([...JSON.parse(req), product]));
+                await AsyncStorage.setItem(`${userID}`, JSON.stringify([...JSON.parse(req), {product, count: 1}]));
             }
             const r = await AsyncStorage.getItem(`${userID}`);
-            // console.log(r);
-
         } catch (error) {
             console.log('Add Card Error', error);
         }
@@ -63,27 +61,32 @@ export default function Item({ item }) {
                 await RemoveHandler(product, userID);
                 setIsHovered(false)
             }
-            const result = await AsyncStorage.getItem(`${userID}`);
-            console.log('error')
-            dispatch(addedCartsRedux([...JSON.parse(result)]));
-            console.log('error1')
 
+            const result = await AsyncStorage.getItem(`${userID}`);
+            const result1 = JSON.parse(result);
+             dispatch(addedCartsRedux(result1));
         } catch (error) {
             console.log('carts error', error);
         }
     }
 
     const Hovered = async (data) => {
-        
-        const resp = await AsyncStorage.getItem('user');
+        try {
+            const resp = await AsyncStorage.getItem('user');
         const userID = JSON.parse(resp).person.id;
+
         const req = await AsyncStorage.getItem(`${userID}`);
+
         const arrData = JSON.parse(req);
         arrData.forEach(element => {
-            if (element.id == data.id) {
+            if (element.product.id == data.id) {
                 setIsHovered(true);
             }
         })
+        } catch (error) {
+            console.log('Hovered error', error)
+        }
+        
     }
 
     useEffect(() => {

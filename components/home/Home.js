@@ -17,14 +17,11 @@ export default function Home({navigation}){
         }
     }
 
-
     useEffect(()=>{
         getdata();
     }, [])
 
     return(<>
-     
-            {/* <Text style={styles.heading}>Products</Text> */}
         <ScrollView contentContainerStyle={styles.itemscontainer}>
             {product.map((prod)=> <Item item={{prod, navigation}} />)}
         </ScrollView>

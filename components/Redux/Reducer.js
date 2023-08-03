@@ -30,39 +30,41 @@ const fetch1 = async()=>{
     const res = await AsyncStorage.getItem('user');
     const userId = JSON.parse(res).person.id;
     const carts = await AsyncStorage.getItem(`${userId}`);
-    
-    if(carts){
-        return JSON.parse(carts);
+    const parseCarts = JSON.parse(carts);
+    console.log('yes')
+    if(parseCarts.length !== 0){
+        return parseCarts;
     }else{
         return [];
     }
 }
 const cartsInitialState = fetch1();
 
-const addedCartsReducer =  async(state = cartsInitialState, action) => {
-   
+const addedCartsReducer = (state = cartsInitialState, action) => {
     switch(action.type){
         case 'carts':
-             return await action.carts;
-             break;
-        default:
-            return await state;
+            console.log('carts', action.carts)
+            return action.carts;
+            break;
+            default:
+            console.log('carts1', action.carts)
+            return state;
     }
 };
 
 
 
-const initialState = fetch1;
+// const initialState = fetch2;
 
-const counterReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case INCREMENT:
-      return { ...state, count: state.count + 1 };
-    case DECREMENT:
-      return { ...state, count: state.count - 1 };
-    default:
-      return state;
-  }
-};
+// const counterReducer = (state = initialState, action) => {
+//   switch (action.type) {
+//     case INCREMENT:
+//       return { ...state, count: state.count + 1 };
+//     case DECREMENT:
+//       return { ...state, count: state.count - 1 };
+//     default:
+//       return state;
+//   }
+// };
 
 export {userReducer, addedCartsReducer};
