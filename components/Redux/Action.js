@@ -2,7 +2,7 @@
 import { INCREMENT, DECREMENT } from './types';
 
 export const userLogin = (user) => {
-  return { payload: user };
+  return { type: 'user',  user };
 };
 
 

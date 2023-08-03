@@ -3,7 +3,9 @@ import { Button, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } f
 
 
 export default function Item({ item }) {
+    console.log(item, 'i')
     const [isHovered, setIsHovered] = useState(false);
+    // const navigation = useNavigation();
 
     const handlePressIn = () => {
         setIsHovered(true);
@@ -13,18 +15,22 @@ export default function Item({ item }) {
         setIsHovered(false);
     };
 
+    const JumpDetails = (data)=>{
+        item.navigation.push('details', data)
+    }
+
     return (<>
         <ScrollView style={styles.itemcontainer}>
             <View style={styles.imgBox}>
-                <Image style={styles.img} source={{ uri: `${item.image}` }} />
+                <Image style={styles.img} source={{ uri: `${item.prod.image}` }} />
             </View>
             <View style={styles.textBox}>
                 <View>
-                    <Text style={styles.title}>Title: <Text style={{color: 'black'}}>{item.title}</Text> </Text>
-                    <Text>Price: <Text style={{color: 'black'}}>{item.price}$</Text></Text>
+                    <Text style={styles.title}>Title: <Text style={{color: 'black'}}>{item.prod.title}</Text> </Text>
+                    <Text>Price: <Text style={{color: 'black'}}>{item.prod.price}$</Text></Text>
                 </View>
                 <View style={styles.flex}>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity onPress={()=>JumpDetails(item.prod)} style={styles.button}>
                         <Text style={styles.buttonText}>View More Details</Text>
                     </TouchableOpacity>
                     <View style={styles.flex}>

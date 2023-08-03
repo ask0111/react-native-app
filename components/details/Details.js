@@ -3,11 +3,11 @@ import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import ImageViewing from 'react-native-image-viewing';
 
-const Details = ({ props }) => {
+const Details = ({ route }) => {
     const [isAdded, setIsAdded] = useState(true);
-  const {title, price, description, category, image, rating } = props;
+    console.log(route.params)
+  const {title, price, description, category, image, rating } = route.params;
 
-  console.log(image)
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

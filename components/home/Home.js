@@ -3,7 +3,7 @@ import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import Item from "./Items";
 
 
-export default function Home(){
+export default function Home({navigation}){
     const [product, setProduct] = useState([]);
 
     const getdata = async()=>{
@@ -26,7 +26,7 @@ export default function Home(){
      
             {/* <Text style={styles.heading}>Products</Text> */}
         <ScrollView contentContainerStyle={styles.itemscontainer}>
-            {product.map((prod)=> <Item item={prod} />)}
+            {product.map((prod)=> <Item item={{prod, navigation}} />)}
         </ScrollView>
     </>
     )

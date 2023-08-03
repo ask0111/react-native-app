@@ -2,17 +2,27 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const fetch = async()=>{
+    console.log('fetch', 'll')
     const res = await AsyncStorage.getItem('user');
     if(res){
+        console.log('fetch', 'a')
         return JSON.parse(res);
     }else{
-        return res;
+        console.log('fetch', 'b')
+        return {};
     }
 }
-const usersInitialState = fetch;
+const userInitialState = fetch();
 
-const userReducer = (state = usersInitialState, action) => {
-    return state;
+const userReducer =  async(state = userInitialState, action) => {
+    console.log(await state, 's')
+    switch(action.type){
+        case 'user':
+             return await state;
+             break;
+        default:
+            return await state;
+    }
 };
 
 // const initialState = {
@@ -30,4 +40,4 @@ const userReducer = (state = usersInitialState, action) => {
 //   }
 // };
 
-export default {userReducer};
+export default userReducer;

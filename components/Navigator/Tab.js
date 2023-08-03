@@ -7,6 +7,7 @@ import Home from '../home/Home';
 import Profile from '../profile/Profile';
 import Card from '../checkout/Card';
 import StackNavigation from './Stack';
+import StackNavDetails from './StackDetails';
 
 const Tab = createBottomTabNavigator();
 
@@ -48,7 +49,8 @@ function TabNavigation() {
               }
             }}
           >
-            <Tab.Screen name="home" component={Home} options={{ 'title': "Products" }} />
+            
+            <Tab.Screen name="home" component={StackNavDetails} options={{ title: "Products" }} />
             <Tab.Screen name="profile" component={Profile} options={{ title: 'User Profile' }} />
             <Tab.Screen name="cart" component={StackNavigation} />
             <Tab.Screen name="card" component={Card} />

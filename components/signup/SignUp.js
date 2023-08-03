@@ -17,16 +17,16 @@ export default function SignUp({ navigation }) {
   const [showOtp, setShowOtp] = useState(false);
   const [varified, setVerified] = useState(false);
   const handleSendOTP = async () => {
-    setShowOtp(!showOtp);
-    const otp = Math.floor(Math.random(6) * (1000000));
-    setOtpOrg(otp);
-    console.log(otp)
-    return Alert(otp);
+    // setShowOtp(!showOtp);
+    // const otp = Math.floor(Math.random(6) * (1000000));
+    // setOtpOrg(otp);
+    // console.log(otp)
+    // return Alert(otp);
   };
   const handleVerifyOTP = (otp) => {
-    if (otp === otpOrg) {
-      setVerified(true);
-    }
+    // if (otp === otpOrg) {
+    //   setVerified(true);
+    // }
   }
 
 
@@ -40,24 +40,33 @@ export default function SignUp({ navigation }) {
     return true;
   }
   const handleSignUp = async () => {
+      // await AsyncStorage.removeItem('users')
+      // await AsyncStorage.removeItem('user')
+      // console.log(await AsyncStorage.removeItem('users'))
     try {
       if (checkfields()) {
         // const r = await AsyncStorage.removeItem('user') || [];
         const dataJson = await AsyncStorage.getItem('users') || [];
-        const res = JSON.parse(dataJson)
+        const res = dataJson.length == 0 ? [] : JSON.parse(dataJson);
         // const res = dataJson
+        // console.log(dataJson, res)
         const person = { id: res.length, name, email, password, mobileNumber }
         if (res.length == 0) {
           await AsyncStorage.setItem('users', JSON.stringify([person]));
         } else {
           await AsyncStorage.setItem('users', JSON.stringify([...res, person]));
         }
-        await AsyncStorage.setItem('user', JSON.stringify(person));
-        dispatch(userLogin(person));
+        await AsyncStorage.setItem('user', JSON.stringify({person, isPresent: true}));
+        console.log(person);
+        dispatch(userLogin({person, isPresent: true}));
         const re = await AsyncStorage.getItem('users');
-
+        
         console.log(re);
       } else {
+        const re = await AsyncStorage.getItem('user');
+        
+        console.log(re);
+        dispatch(userLogin({person:JSON.parse(re), isPresent: true}));
         return console.log("not allow")
       }
 

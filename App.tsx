@@ -14,16 +14,26 @@ const Stack = createStackNavigator();
 
 function App() {
   const user = useSelector((state) => state);
+  const fetch = async()=>{
+    const userd = await AsyncStorage.getItem('user') || {isPresent: false};
+    const isPresent = JSON.parse(userd).isPresent;
+    console.log('is pre', isPresent);
+    if(isPresent){
+      setIsUser(true);
+      return ;
+    }
+    setIsUser(false);
+    return;
+  }
 
-  const [isUser, setIsUser] = useState(AsyncStorage.getItem('user') || false); 
-  console.log(user, 'app');
+  const [isUser, setIsUser] = useState(false); 
 
-  // useEffect(()=>{
-  //   setIsUser(user);
-  // }, [isUser])
+  useEffect(()=>{
+    fetch()
+  }, [user])
  
  return (<>
-    {!isUser ? <TabNavigation /> :
+    {isUser ? <TabNavigation /> :
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="signup" component={SignUp} options={{
