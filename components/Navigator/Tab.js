@@ -33,7 +33,16 @@ function TabNavigation() {
                   iconName = focused ? 'exit' : 'exit-outline';
                   size = focused ? size + 8 : size + 4;
                 }
-                return <Icon name={iconName} size={size} color={color} />;
+                return <Icon name={iconName} size={size} color={color} />},
+                tabBarActiveTintColor: 'blue',
+        tabBarInactiveTintColor: 'gray',
+        tabBarLabelStyle: {
+          fontSize: 14,
+        },
+        tabBarStyle: {
+          backgroundColor: 'white',
+          borderTopWidth: 1,
+          borderTopColor: 'lightgray',
               }
             })}
   

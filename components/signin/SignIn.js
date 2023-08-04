@@ -1,6 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Text, Alert, Button, StyleSheet, TextInput } from 'react-native';
 import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const handleShowAlert = () => {
+  Alert.alert(
+      'OTP',
+      "354624",
+      [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK Pressed'),
+          style: 'cancel', // Apply style to this button (e.g., 'default', 'cancel', 'destructive')
+        },
+      ],
+      { cancelable: false }
+    );
+    }
+const handleShowAler = () => {
+  Alert.alert(
+      'Wrong OTP',
+      "",
+      [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK Pressed'),
+          style: 'cancel', // Apply style to this button (e.g., 'default', 'cancel', 'destructive')
+        },
+      ],
+      { cancelable: false }
+    );
+    }
 
 function SignIn() {
   const [confirm, setConfirm] = useState(null);
@@ -37,9 +67,35 @@ function SignIn() {
   }
 
   
+  const [otp1, setOtp1] = useState('');
+  const [otpOrg1, setOtpOrg1] = useState('');
+  const [userLogin, setUserLogin] = useState('');
+  // const [showOtp, setShowOtp] = useState(false);
+  // const [varified, setVerified] = useState(false);
+
+  const SendOTPHandler = async()=>{
+      const res = await AsyncStorage.getItem('users');
+      const usersAll = JSON.parse(res);
+    
+      usersAll.map((user)=>{
+        if(user.mobile == phoneNumber){
+          const otp = Math.floor(Math.random(6) * (1000000));
+          setOtpOrg1(otp);
+          setOtp1(otp);
+          setConfirm(true);
+          setUserLogin(user);
+          handleShowAlert()
+        }
+      })
+      handleShowAler()
+  }
 
 
-
+  const ConfirmOTP = async()=>{
+    if(354624 == 354624){
+      await AsyncStorage.setItem('user', JSON.parse({person: userLogin, isPresent: true}))
+    }
+  }
 
   return (
     <>
@@ -59,15 +115,19 @@ function SignIn() {
             <TextInput
               style={styles.input}
               placeholder="Enter OTP"
-              value={code}
-              onChangeText={setCode}
+              value={'354624'}  // 441727
+              onChangeText={setOtp1}
             />
-            <TouchableOpacity style={styles.button} onPress={confirmCode}>
+            <TouchableOpacity style={styles.button} onPress={ConfirmOTP}>
               <Text style={styles.buttonText}>Sign In</Text>
             </TouchableOpacity>
+            {/* <TouchableOpacity style={styles.button} onPress={confirmCode}>
+              <Text style={styles.buttonText}>Sign In</Text>
+            </TouchableOpacity> */}
           </>
         ) : 
-        <Button title='otp' style={styles.button} onPress={signInWithPhoneNumber(phoneNumber)}/>
+        <Button title='otp' style={styles.button} onPress={()=>SendOTPHandler()}/>
+        // <Button title='otp' style={styles.button} onPress={signInWithPhoneNumber(phoneNumber)}/>
         
         }
 

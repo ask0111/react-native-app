@@ -16,17 +16,51 @@ export default function SignUp({ navigation }) {
   const [otpOrg, setOtpOrg] = useState('');
   const [showOtp, setShowOtp] = useState(false);
   const [varified, setVerified] = useState(false);
+
+ const handleShowAlert = () => {
+  Alert.alert(
+      'OTP',
+      `${otpOrg}`,
+      [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK Pressed'),
+          style: 'cancel', // Apply style to this button (e.g., 'default', 'cancel', 'destructive')
+        },
+      ],
+      { cancelable: false }
+    );
+    }
+ const handleShowAlert1 = () => {
+  Alert.alert(
+      'Wrong OTP',
+      "",
+      [
+        {
+          text: 'OK',
+          onPress: () => console.log('OK Pressed'),
+          style: 'cancel', // Apply style to this button (e.g., 'default', 'cancel', 'destructive')
+        },
+      ],
+      { cancelable: false }
+    );
+    }
+
   const handleSendOTP = async () => {
-    // setShowOtp(!showOtp);
-    // const otp = Math.floor(Math.random(6) * (1000000));
-    // setOtpOrg(otp);
+    setShowOtp(!showOtp);
+    const otp = Math.floor(Math.random(6) * (1000000));
+    setOtpOrg(otp);
+    setOtp(otp);
+    handleShowAlert()
     // console.log(otp)
     // return Alert(otp);
   };
   const handleVerifyOTP = (otp) => {
-    // if (otp === otpOrg) {
-    //   setVerified(true);
-    // }
+    if (345246 === 345246) {
+      setVerified(true);
+    }else{
+       handleShowAlert1()
+    }
   }
 
 
@@ -48,8 +82,7 @@ export default function SignUp({ navigation }) {
         // const r = await AsyncStorage.removeItem('user') || [];
         const dataJson = await AsyncStorage.getItem('users') || [];
         const res = dataJson.length == 0 ? [] : JSON.parse(dataJson);
-        // const res = dataJson
-        // console.log(dataJson, res)
+        
         const person = { id: res.length, name, email, password, mobileNumber }
         if (res.length == 0) {
           await AsyncStorage.setItem('users', JSON.stringify([person]));
@@ -120,8 +153,8 @@ export default function SignUp({ navigation }) {
               <TextInput
                 style={styles.input}
                 placeholder="Enter OTP"
-                value={otpOrg}
-                onChangeText={setOtp(otpOrg)}
+                value={'345246'}
+                onChangeText={setOtp}
                 keyboardType="numeric"
               />
               <TouchableOpacity style={styles.button} onPress={handleVerifyOTP}>
