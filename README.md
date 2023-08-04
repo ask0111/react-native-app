@@ -1,79 +1,25 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+#E-Commerce Android Application
 
-# Getting Started
+>*Features
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+>SignUp<img width="182" alt="signup" src="https://github.com/ask0111/react-native-app/assets/88626935/c77d58e9-4377-4ba4-87af-03b76ae6f2ab">
 
-## Step 1: Start the Metro Server
+>*Home or Product<img width="188" alt="home" src="https://github.com/ask0111/react-native-app/assets/88626935/11275a15-f512-437d-822c-3a1c2f575327">
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+>*Item Details<img width="185" alt="dtails" src="https://github.com/ask0111/react-native-app/assets/88626935/d69df793-79f5-41a2-9f3f-35caf9d89baa">
 
-To start Metro, run the following command from the _root_ of your React Native project:
+>*Cart<img width="179" alt="cart" src="https://github.com/ask0111/react-native-app/assets/88626935/af05ecae-7e80-42e3-b278-03205521e206">
 
-```bash
-# using npm
-npm start
+>*Payment Options<img width="181" alt="option" src="https://github.com/ask0111/react-native-app/assets/88626935/4b769d8c-d9ad-4d4c-97d6-f719fa785f35">
 
-# OR using Yarn
-yarn start
-```
+>*Summery<img width="181" alt="book" src="https://github.com/ask0111/react-native-app/assets/88626935/d2ffb120-2ab5-4ae6-a21e-98a946d2e62b">
 
-## Step 2: Start your Application
+>*Orderd<img width="185" alt="orderd" src="https://github.com/ask0111/react-native-app/assets/88626935/fdb70388-dbe6-4ebc-98eb-755540e5667c">
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
 
-### For Android
 
-```bash
-# using npm
-npm run android
+*Sort Assigment with some overview
 
-# OR using Yarn
-yarn android
-```
 
-### For iOS
 
-```bash
-# using npm
-npm run ios
 
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
-
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
-
-## Step 3: Modifying your App
-
-Now that you have successfully run the app, let's modify it.
-
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
-
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
